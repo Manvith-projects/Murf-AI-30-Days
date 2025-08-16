@@ -2,6 +2,8 @@ import os
 import assemblyai as aai
 import logging
 import io
+from dotenv import load_dotenv
+load_dotenv()
 
 aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
 logger = logging.getLogger(__name__)

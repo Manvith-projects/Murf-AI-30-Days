@@ -9,14 +9,36 @@ from schemas import AudioRequest, AudioResponse, LLMQueryRequest, LLMQueryRespon
 from services.tts_service import murf_tts
 from services.stt_service import transcribe_audio
 from services.llm_service import query_llm
+
 from flask_socketio import SocketIO, send
+from flask_sock import Sock
 
 
 load_dotenv()
 
+
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
+sock = Sock(app)
+# ----------------- WebSocket Echo Endpoint -----------------
+@sock.route('/ws')
+def websocket_echo(ws):
+    while True:
+        data = ws.receive()
+        if data is None:
+            break
+        logger.info(f"[Flask-Sock WS] Received: {data}")
+        ws.send(data)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+# In-memory chat history storage
+chat_sessions = {}
+
+# ----------------- WebSocket Echo Endpoint -----------------
+@socketio.on('message')
+def handle_ws_message(msg):
+    logger.info(f"WebSocket received: {msg}")
+    send(msg)
 
 # In-memory chat history storage
 chat_sessions = {}
@@ -173,8 +195,11 @@ def agent_chat(session_id):
             logger.exception("Chat history error")
             return jsonify({"error": f"Chat history error: {str(e)}"}), 500
         # Step 3: Send conversation context to Gemini LLM
+        logger.info(f"[agent_chat] Sending context to LLM: {conversation_context}")
         llm_response = query_llm(conversation_context)
+        logger.info(f"[agent_chat] LLM response: {llm_response}")
         if not llm_response:
+            logger.error("[agent_chat] Empty response from LLM.")
             return jsonify({"error": "Empty response from LLM. Please try again later."}), 502
         # Step 4: Add LLM response to chat history
         try:
@@ -245,4 +270,4 @@ def handle_ws_message(msg):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
