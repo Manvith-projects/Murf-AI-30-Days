@@ -9,6 +9,8 @@ from schemas import AudioRequest, AudioResponse, LLMQueryRequest, LLMQueryRespon
 from services.tts_service import murf_tts
 from services.stt_service import transcribe_audio
 from services.llm_service import query_llm
+from flask_socketio import SocketIO, send
+
 
 load_dotenv()
 
@@ -31,6 +33,7 @@ def api():
 
 
 @app.route("/generate-audio", methods=["POST"])
+def generate_audio():
     try:
         req_data = request.get_json() if request.is_json else request.form
         text = req_data.get("text")
@@ -46,6 +49,7 @@ def api():
 
 # -------------- ECHO BOT COMBINED ----------------
 @app.route("/tts/echo", methods=["POST"])
+def echo_bot():
     try:
         if "audio" not in request.files:
             return jsonify({"error": "No audio file"}), 400
@@ -67,6 +71,7 @@ def api():
 
 
 @app.route("/llm/query", methods=["POST"])
+def llm_query():
     try:
         if "audio" in request.files:
             audio_file = request.files["audio"]
@@ -145,16 +150,6 @@ def build_conversation_context(session_id, new_user_message):
 @app.route("/agent/chat/<session_id>", methods=["POST"])
 def agent_chat(session_id):
     """Chat endpoint with session-based history"""
-    
-    # Validate session_id
-    if not session_id or len(session_id) < 1:
-        return jsonify({"error": "Invalid session ID"}), 400
-    
-    # Check if audio file is provided
-    if "audio" not in request.files:
-        return jsonify({"error": "No audio file provided"}), 400
-    
-    audio_file = request.files["audio"]
     try:
         # Validate session_id
         if not session_id or len(session_id) < 1:
@@ -166,7 +161,7 @@ def agent_chat(session_id):
         if not audio_file:
             return jsonify({"error": "Empty audio file"}), 400
         audio_bytes = io.BytesIO(audio_file.read())
-        # Step 1: Transcribe audio with AssemblyAI
+        # Step 1: Transcribe audio
         user_message = transcribe_audio(audio_bytes)
         if not user_message:
             return jsonify({"error": "Failed to transcribe audio. Please try again."}), 502
@@ -203,16 +198,11 @@ def agent_chat(session_id):
             "llm_response": llm_response,
             "audio_url": audio_url,
             "message_count": len(session_info["messages"]),
-            "session_created": session_info["created_at"].isoformat(),
             "last_activity": session_info["last_activity"].isoformat()
-        }), 200
+        })
     except Exception as e:
         logger.exception("Error in agent_chat")
         return jsonify({"error": "Internal server error. Please try again later."}), 500
-            "created_at": session_data["created_at"].isoformat(),
-            "last_activity": session_data["last_activity"].isoformat()
-        }
-    return jsonify(sessions_info)
 
 @app.route("/agent/session/<session_id>/history", methods=["GET"])
 def get_session_history(session_id):
@@ -243,6 +233,16 @@ def clear_session(session_id):
         return jsonify({"message": f"Session {session_id} cleared"})
     else:
         return jsonify({"error": "Session not found"}), 404
+
+
+
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+@socketio.on('message', namespace='/ws')
+def handle_ws_message(msg):
+    print(f"Received via websocket: {msg}")
+    send(msg, namespace='/ws')  # Echo back
+
 
 if __name__ == "__main__":
     app.run(debug=True)
