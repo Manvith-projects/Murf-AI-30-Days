@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice AI Agent - Murf AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif']
+          },
+          animation: {
+            'pulse-ring': 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'recording-pulse': 'recording-pulse 1.5s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            'pulse-ring': {
+              '0%': { transform: 'scale(1)', opacity: '1' },
+              '100%': { transform: 'scale(2)', opacity: '0' }
+            },
+            'recording-pulse': {
+              '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+              '50%': { transform: 'scale(1.1)', opacity: '0.8' }
+            },
+            'float': {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            'glow': {
+              'from': { boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)' },
+              'to': { boxShadow: '0 0 30px rgba(168, 85, 247, 0.8)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    }
+    
+    .glass-morphism {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .chat-bubble-user {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px 20px 5px 20px;
+    }
+    
+    .chat-bubble-ai {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 20px 20px 20px 5px;
+    }
+    
+    .record-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .record-button:hover {
+      transform: translateY(-2px);
+    }
+    
+    .recording {
+      animation: recording-pulse 1.5s ease-in-out infinite;
+    }
+    
+    .microphone-icon {
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="gradient-bg text-white font-inter min-h-screen overflow-x-hidden">
+
+<!-- Header -->
+<header class="glass-morphism fixed top-0 w-full z-50 px-6 py-4">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <h1 class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+      Voice AI Agent
+    </h1>
+    <div class="flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2 text-sm">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span>AI Online</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="pt-20 pb-10 px-4">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Hero Section -->
+    <div class="text-center mb-12 animate-float">
+      <h2 class="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+        Talk to AI
+      </h2>
+      <p class="text-xl text-gray-300 mb-8">
+        Have natural conversations with advanced AI technology
+      </p>
+    </div>
+
+    <!-- Main Chat Interface -->
+    <div class="glass-morphism rounded-3xl p-8 mb-8 shadow-2xl">
+      
+      <!-- Session Info -->
+      <div class="flex justify-between items-center mb-6 p-4 bg-white/5 rounded-2xl">
+        <div class="flex items-center space-x-4">
+          <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          <div>
+            <p class="text-sm text-gray-400">Session ID</p>
+            <p id="sessionId" class="text-purple-300 font-mono text-sm">Loading...</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-sm text-gray-400">Messages</p>
+          <p id="messageCount" class="text-2xl font-bold text-green-400">0</p>
+        </div>
+      </div>
+
+      <!-- Chat History -->
+      <div id="chatHistory" class="min-h-[300px] max-h-[400px] overflow-y-auto mb-8 p-4 bg-black/20 rounded-2xl">
+        <div class="text-center text-gray-400 py-8">
+          <div class="w-16 h-16 mx-auto mb-4 opacity-50">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <p>Start your conversation by pressing the record button below</p>
+        </div>
+      </div>
+
+      <!-- Recording Controls -->
+      <div class="flex flex-col items-center space-y-6">
+        
+        <!-- Main Record Button -->
+        <div class="relative">
+          <!-- Pulse rings -->
+          <div id="pulseRing1" class="absolute inset-0 rounded-full bg-purple-500 opacity-0"></div>
+          <div id="pulseRing2" class="absolute inset-0 rounded-full bg-purple-400 opacity-0"></div>
+          
+          <!-- Main button -->
+          <button id="recordButton" class="record-button relative w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 animate-glow">
+            <svg id="micIcon" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 microphone-icon">
+              <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+            </svg>
+            <svg id="stopIcon" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 microphone-icon hidden">
+              <path d="M6 6h12v12H6z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Button Text -->
+        <div class="text-center">
+          <p id="recordButtonText" class="text-lg font-medium text-white">Press to Start Recording</p>
+          <p id="recordingStatus" class="text-sm text-gray-400 mt-1"></p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex space-x-4">
+          <button id="clearSession" class="px-6 py-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-xl transition-all duration-300 flex items-center space-x-2">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </svg>
+            <span>Clear Chat</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="chatLoading" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="glass-morphism rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 mx-auto mb-4">
+            <div class="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent"></div>
+          </div>
+          <p class="text-lg font-medium">Processing your message...</p>
+          <p class="text-sm text-gray-400 mt-2">AI is thinking...</p>
+        </div>
+      </div>
+
+      <!-- Hidden Audio Player -->
+      <audio id="chatResponseAudio" class="hidden" preload="auto"></audio>
+      
+    </div>
+
+
+<script>
+let chatMediaRecorder;
+let chatAudioChunks = [];
+let isRecording = false;
+let currentSessionId = null;
+
+// UI Elements
+const recordButton = document.getElementById('recordButton');
+const micIcon = document.getElementById('micIcon');
+const stopIcon = document.getElementById('stopIcon');
+const recordButtonText = document.getElementById('recordButtonText');
+const recordingStatus = document.getElementById('recordingStatus');
+const pulseRing1 = document.getElementById('pulseRing1');
+const pulseRing2 = document.getElementById('pulseRing2');
+const clearSessionBtn = document.getElementById('clearSession');
+const chatLoading = document.getElementById('chatLoading');
+const chatHistory = document.getElementById('chatHistory');
+const chatResponseAudio = document.getElementById('chatResponseAudio');
+const sessionIdSpan = document.getElementById('sessionId');
+const messageCountSpan = document.getElementById('messageCount');
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+  initializeSession();
+  setupEventListeners();
+});
+
+// Generate or get session ID
+function getSessionId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let sessionId = urlParams.get('session_id');
+  
+  if (!sessionId) {
+    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('session_id', sessionId);
+    window.history.replaceState({}, '', newUrl);
+  }
+  
+  return sessionId;
+}
+
+// Initialize session
+async function initializeSession() {
+  currentSessionId = getSessionId();
+  sessionIdSpan.textContent = currentSessionId.substring(0, 20) + '...';
+  await loadChatHistory();
+  recordingStatus.textContent = 'Ready to start your conversation';
+}
+
+// Setup event listeners
+function setupEventListeners() {
+  recordButton.addEventListener('click', toggleRecording);
+  clearSessionBtn.addEventListener('click', clearSession);
+  
+  // Auto-play audio when it loads
+  chatResponseAudio.addEventListener('loadeddata', () => {
+    chatResponseAudio.play().catch(e => console.log('Auto-play prevented'));
+  });
+  
+  // Setup auto-record after audio ends
+  chatResponseAudio.addEventListener('ended', () => {
+    setTimeout(() => {
+      if (!isRecording) {
+        recordingStatus.textContent = 'Continue the conversation...';
+      }
+    }, 1000);
+  });
+}
+
+// Toggle recording state
+async function toggleRecording() {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+}
+
+// Start recording
+async function startRecording() {
+  try {
+    if (!chatMediaRecorder) {
+      await initializeMediaRecorder();
+    }
+    
+    if (chatMediaRecorder && chatMediaRecorder.state === 'inactive') {
+      chatMediaRecorder.start();
+      isRecording = true;
+      updateRecordingUI(true);
+    }
+  } catch (error) {
+    console.error('Error starting recording:', error);
+    showToast('Could not access microphone. Please check permissions.', 'error');
+  }
+}
+
+// Stop recording
+function stopRecording() {
+  if (chatMediaRecorder && chatMediaRecorder.state === 'recording') {
+    chatMediaRecorder.stop();
+    isRecording = false;
+    updateRecordingUI(false);
+    showLoading();
+  }
+}
+
+// Initialize media recorder
+async function initializeMediaRecorder() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  chatMediaRecorder = new MediaRecorder(stream);
+  
+  chatMediaRecorder.ondataavailable = (event) => {
+    chatAudioChunks.push(event.data);
+  };
+  
+  chatMediaRecorder.onstop = () => {
+    const audioBlob = new Blob(chatAudioChunks, { type: 'audio/wav' });
+    sendAudioToServer(audioBlob);
+    chatAudioChunks = [];
+  };
+}
+
+// Update recording UI
+function updateRecordingUI(recording) {
+  if (recording) {
+    // Recording state
+    recordButton.classList.add('recording');
+    recordButton.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+    micIcon.classList.add('hidden');
+    stopIcon.classList.remove('hidden');
+    recordButtonText.textContent = 'Recording... Tap to Stop';
+    recordingStatus.textContent = 'Listening to your voice...';
+    
+    // Start pulse animations
+    startPulseAnimation();
+  } else {
+    // Not recording state
+    recordButton.classList.remove('recording');
+    recordButton.style.background = 'linear-gradient(135deg, #8b5cf6, #ec4899)';
+    micIcon.classList.remove('hidden');
+    stopIcon.classList.add('hidden');
+    recordButtonText.textContent = 'Processing...';
+    recordingStatus.textContent = 'Processing your message...';
+    
+    // Stop pulse animations
+    stopPulseAnimation();
+  }
+}
+
+// Start pulse animation
+function startPulseAnimation() {
+  pulseRing1.style.animation = 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite';
+  pulseRing2.style.animation = 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 1s';
+}
+
+// Stop pulse animation
+function stopPulseAnimation() {
+  pulseRing1.style.animation = 'none';
+  pulseRing2.style.animation = 'none';
+}
+
+// Send audio to server
+async function sendAudioToServer(audioBlob) {
+  const formData = new FormData();
+  formData.append('audio', audioBlob, 'recording.wav');
+  
+  try {
+    const response = await fetch(`/agent/chat/${currentSessionId}`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    hideLoading();
+    
+    if (response.ok) {
+      handleSuccessResponse(result);
+    } else {
+      handleErrorResponse(result);
+    }
+  } catch (error) {
+    hideLoading();
+    console.error('Network error:', error);
+    showToast('Connection error. Please check your internet and try again.', 'error');
+    resetRecordButton();
+  }
+}
+
+// Handle successful response
+function handleSuccessResponse(result) {
+  // Update UI
+  if (result.message_count) {
+    messageCountSpan.textContent = result.message_count;
+  }
+  
+  // Add to chat history
+  addMessageToHistory('user', result.transcription);
+  addMessageToHistory('ai', result.llm_response);
+  
+  // Play audio response
+  if (result.audio_url) {
+    chatResponseAudio.src = result.audio_url;
+    recordingStatus.textContent = 'AI is responding...';
+  }
+  
+  resetRecordButton();
+  showToast('Message processed successfully!', 'success');
+}
+
+// Handle error response
+function handleErrorResponse(result) {
+  console.error('Server error:', result);
+  showToast(result.error || 'Something went wrong. Please try again.', 'error');
+  resetRecordButton();
+}
+
+// Reset record button to initial state
+function resetRecordButton() {
+  recordButtonText.textContent = 'Press to Start Recording';
+  recordingStatus.textContent = 'Ready for your next message';
+}
+
+// Add message to chat history
+function addMessageToHistory(type, message) {
+  if (!message) return;
+  
+  const messageElement = document.createElement('div');
+  messageElement.className = `mb-4 ${type === 'user' ? 'text-right' : 'text-left'}`;
+  
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  messageElement.innerHTML = `
+    <div class="${type === 'user' ? 'chat-bubble-user ml-8' : 'chat-bubble-ai mr-8'} p-4 text-white">
+      <div class="flex items-center gap-2 mb-2 text-xs opacity-80">
+        <span>${type === 'user' ? '👤 You' : '🤖 AI'}</span>
+        <span>${time}</span>
+      </div>
+      <p class="text-sm leading-relaxed">${message}</p>
+    </div>
+  `;
+  
+  // Remove placeholder if it exists
+  const placeholder = chatHistory.querySelector('.text-center.text-gray-400');
+  if (placeholder) {
+    placeholder.remove();
+  }
+  
+  chatHistory.appendChild(messageElement);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+// Load chat history
+async function loadChatHistory() {
+  try {
+    const response = await fetch(`/agent/session/${currentSessionId}/history`);
+    if (response.ok) {
+      const data = await response.json();
+      displayChatHistory(data.messages);
+      messageCountSpan.textContent = data.messages.length;
+    } else if (response.status !== 404) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+    showToast('Unable to load chat history', 'warning');
+  }
+}
+
+// Display chat history
+function displayChatHistory(messages) {
+  if (!messages || messages.length === 0) return;
+  
+  // Clear placeholder
+  chatHistory.innerHTML = '';
+  
+  messages.forEach(msg => {
+    addMessageToHistory(msg.role === 'user' ? 'user' : 'ai', msg.content);
+  });
+}
+
+// Clear session
+async function clearSession() {
+  if (!confirm('Are you sure you want to clear this chat session?')) return;
+  
+  try {
+    const response = await fetch(`/agent/session/${currentSessionId}`, {
+      method: 'DELETE'
+    });
+    
+    if (response.ok) {
+      chatHistory.innerHTML = `
+        <div class="text-center text-gray-400 py-8">
+          <div class="w-16 h-16 mx-auto mb-4 opacity-50">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <p>Chat cleared! Start a new conversation</p>
+        </div>
+      `;
+      messageCountSpan.textContent = '0';
+      recordingStatus.textContent = 'Ready to start fresh conversation';
+      showToast('Chat session cleared successfully!', 'success');
+    }
+  } catch (error) {
+    console.error('Error clearing session:', error);
+    showToast('Unable to clear session. Please try again.', 'error');
+  }
+}
+
+// Show loading
+function showLoading() {
+  chatLoading.classList.remove('hidden');
+}
+
+// Hide loading
+function hideLoading() {
+  chatLoading.classList.add('hidden');
+}
+
+// Toast notification system
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  const bgColor = {
+    'success': 'bg-green-500',
+    'error': 'bg-red-500',
+    'warning': 'bg-yellow-500',
+    'info': 'bg-blue-500'
+  }[type] || 'bg-blue-500';
+  
+  toast.className = `fixed top-6 right-6 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+  toast.textContent = message;
+  
+  document.body.appendChild(toast);
+  
+  // Slide in
+  setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+  
+  // Slide out and remove
+  setTimeout(() => {
+    toast.classList.add('translate-x-full');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+</script>
+
+</body>
+</html>
+

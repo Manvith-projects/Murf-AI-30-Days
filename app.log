@@ -1,0 +1,229 @@
+2025-08-12 22:40:21,182 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:40:21,254 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:40:21,576 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:40:21,591 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:40:21,757 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.253:5000
+2025-08-12 22:40:21,761 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-12 22:40:21,772 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:40:26,255 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:40:26,281 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:40:26,680 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:40:26,749 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:40:26,860 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:40:26,887 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:40:33,176 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app_robust.py', reloading
+2025-08-12 22:40:34,059 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:40:38,935 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:40:38,944 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:40:38,946 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:40:38,946 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:40:38,948 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:40:39,156 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:40:39,170 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:40:39,229 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:40:39,237 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:40:46,735 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:40:46] "GET / HTTP/1.1" 200 -
+2025-08-12 22:40:47,140 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:40:47] "[36mGET /static/2.jpg HTTP/1.1[0m" 304 -
+2025-08-12 22:40:47,883 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:40:47] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:40:52,041 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:40:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-08-12 22:42:21,805 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:42:21,807 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:42:21,811 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:42:21,813 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:42:21,813 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:42:22,081 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:42:22,115 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:42:22,330 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.253:5000
+2025-08-12 22:42:22,332 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-12 22:42:22,345 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:42:27,432 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:42:27,432 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:42:27,438 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:42:27,439 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:42:27,442 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:42:27,663 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:42:27,675 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:42:27,742 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:42:27,757 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:42:28,122 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:42:28] "GET / HTTP/1.1" 200 -
+2025-08-12 22:42:28,401 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:42:28] "[36mGET /static/2.jpg HTTP/1.1[0m" 304 -
+2025-08-12 22:42:29,122 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:42:29] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:44:18,327 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:44:18,327 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:44:18,329 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:44:18,329 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:44:18,334 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:44:18,624 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:44:18,638 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:44:18,769 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.253:5000
+2025-08-12 22:44:18,771 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-12 22:44:18,777 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:44:23,980 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:44:23,981 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:44:23,984 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:44:23,984 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:44:23,984 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:44:24,218 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:44:24,226 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:44:24,282 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:44:24,296 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:44:27,980 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\demo_error_handling.py', reloading
+2025-08-12 22:44:28,840 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:44:34,004 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:44:34,004 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:44:34,014 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:44:34,014 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:44:34,014 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:44:34,199 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:44:34,199 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:44:34,259 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:44:34,274 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:45:16,492 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:45:16,492 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:45:16,494 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:45:16,496 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:45:16,496 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:45:16,842 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:45:16,858 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:45:17,047 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.31.253:5000
+2025-08-12 22:45:17,049 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-12 22:45:17,058 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:45:23,422 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:45:23,422 - __main__ - INFO - - MURF API Key: Available
+2025-08-12 22:45:23,424 - __main__ - INFO - - AssemblyAI API Key: Available
+2025-08-12 22:45:23,424 - __main__ - INFO - - Gemini API Key: Available
+2025-08-12 22:45:23,426 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:45:23,604 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:45:23,624 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:45:23,688 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:45:23,701 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:45:36,661 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:36] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:45:36,672 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:36] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:45:36,691 - __main__ - INFO - MURF Request: 42 characters
+2025-08-12 22:45:40,132 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:40] "GET / HTTP/1.1" 200 -
+2025-08-12 22:45:40,415 - __main__ - INFO - MURF Response Status: 200
+2025-08-12 22:45:40,425 - __main__ - INFO - MURF TTS successful
+2025-08-12 22:45:40,429 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:40] "POST /generate-audio HTTP/1.1" 200 -
+2025-08-12 22:45:40,470 - __main__ - INFO - Gemini Request: 25 characters
+2025-08-12 22:45:40,470 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-08-12 22:45:40,561 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:40] "[36mGET /static/2.jpg HTTP/1.1[0m" 304 -
+2025-08-12 22:45:41,335 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:41] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:45:55,610 - httpx - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-08-12 22:45:55,620 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-08-12 22:45:55,621 - __main__ - INFO - Gemini LLM successful: 5056 characters
+2025-08-12 22:45:55,622 - __main__ - WARNING - Text truncated to 5000 characters
+2025-08-12 22:45:55,622 - __main__ - INFO - MURF Request: 5003 characters
+2025-08-12 22:45:56,590 - __main__ - INFO - MURF Response Status: 400
+2025-08-12 22:45:56,598 - __main__ - ERROR - Error in murf_tts: MURF API request failed: 400 Client Error: Bad Request for url: https://api.murf.ai/v1/speech/generate
+2025-08-12 22:45:56,606 - __main__ - WARNING - TTS failed: 500
+2025-08-12 22:45:56,631 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:56] "POST /llm/query HTTP/1.1" 200 -
+2025-08-12 22:45:56,699 - __main__ - INFO - Error simulation for murf: enabled
+2025-08-12 22:45:56,707 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:56] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:56,771 - __main__ - INFO - Simulating MURF API error
+2025-08-12 22:45:56,771 - __main__ - ERROR - Error in murf_tts: Simulated MURF API failure
+2025-08-12 22:45:56,773 - __main__ - WARNING - MURF TTS failed: 500
+2025-08-12 22:45:56,775 - __main__ - INFO - Generating fallback audio for: Testing TTS with simulated error...
+2025-08-12 22:45:56,776 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:56] "POST /generate-audio HTTP/1.1" 200 -
+2025-08-12 22:45:56,806 - __main__ - INFO - Error simulation for murf: disabled
+2025-08-12 22:45:56,808 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:56] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:57,824 - __main__ - INFO - Error simulation for gemini: enabled
+2025-08-12 22:45:57,824 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:57] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:57,854 - __main__ - INFO - Simulating Gemini API error
+2025-08-12 22:45:57,856 - __main__ - ERROR - Error in gemini_llm: Simulated Gemini API failure
+2025-08-12 22:45:57,858 - __main__ - WARNING - LLM failed: 500
+2025-08-12 22:45:57,860 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:57] "POST /llm/query HTTP/1.1" 200 -
+2025-08-12 22:45:57,875 - __main__ - INFO - Error simulation for gemini: disabled
+2025-08-12 22:45:57,877 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:57] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:58,901 - __main__ - INFO - Error simulation for assemblyai: enabled
+2025-08-12 22:45:58,907 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:58] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:58,923 - __main__ - INFO - Error simulation for assemblyai: disabled
+2025-08-12 22:45:58,929 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:58] "POST /admin/simulate-error HTTP/1.1" 200 -
+2025-08-12 22:45:59,962 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:45:59] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:46:12,199 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:46:12] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:46:42,190 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:46:42] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:46:48,100 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app_robust.py', reloading
+2025-08-12 22:46:48,762 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:46:53,886 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:46:53,903 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:46:54,172 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:46:54,186 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:46:54,251 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:46:54,261 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:47:12,195 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:47:12] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:47:42,192 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:47:42] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:48:12,196 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:48:12] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:48:42,187 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:48:42] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:49:00,204 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:49:00,847 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:49:06,339 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:49:06,357 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:49:06,573 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:49:06,590 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:49:06,676 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:49:06,683 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:49:12,709 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:49:13,431 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:49:18,256 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:49:18,275 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:49:18,524 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:49:18,546 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:49:18,624 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:49:18,635 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:49:23,225 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:49:23] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:49:33,965 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:49:34,914 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:49:39,926 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:49:39,943 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:49:40,144 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:49:40,156 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:49:40,224 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:49:40,232 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:49:57,715 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:49:58,404 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:50:03,315 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:50:03,335 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:50:03,555 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:50:03,576 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:50:03,664 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:50:03,673 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:50:21,355 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:50:21,983 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:50:27,671 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:50:27,692 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:50:27,953 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:50:27,971 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:50:28,036 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:50:28,046 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:50:28,229 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:50:28] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:50:56,266 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:50:57,042 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:51:02,828 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:51:02,853 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:51:03,060 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:51:03,072 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:51:03,141 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:51:03,149 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:51:14,945 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manvith Sai\\OneDrive\\Desktop\\Murf AI 30 Days\\app.py', reloading
+2025-08-12 22:51:15,648 - werkzeug - INFO -  * Restarting with stat
+2025-08-12 22:51:20,709 - __main__ - INFO - Configuration loaded:
+2025-08-12 22:51:20,727 - __main__ - INFO - AssemblyAI initialized successfully
+2025-08-12 22:51:20,947 - __main__ - INFO - Gemini client initialized successfully
+2025-08-12 22:51:20,963 - __main__ - INFO - Starting robust Flask application
+2025-08-12 22:51:21,038 - werkzeug - WARNING -  * Debugger is active!
+2025-08-12 22:51:21,049 - werkzeug - INFO -  * Debugger PIN: 106-342-444
+2025-08-12 22:51:23,210 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:51:23] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:52:23,201 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:52:23] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:53:23,206 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:53:23] "GET /health HTTP/1.1" 200 -
+2025-08-12 22:56:20,516 - werkzeug - INFO - 127.0.0.1 - - [12/Aug/2025 22:56:20] "[33mPOST /admin/simulate-errors HTTP/1.1[0m" 404 -
