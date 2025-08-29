@@ -338,7 +338,8 @@
     let ws, audioCtx, processor, input, stream;
     let assistantStreamingMsg = null;
     function connectWebSocket() {
-      ws = new WebSocket('ws://' + window.location.host + '/transcribe-ws');
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+      ws = new WebSocket(wsProtocol + window.location.host + '/transcribe-ws');
       ws.binaryType = 'arraybuffer';
       ws.onopen = () => {
         const keys = {
@@ -409,6 +410,12 @@
       }
     }
     function startAudio() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Your browser does not support audio recording. Please use a modern browser like Chrome or Firefox, and ensure you are running on HTTPS or localhost.');
+        recordBtn.textContent = 'Start Recording';
+        recordBtn.classList.remove('recording');
+        return;
+      }
       navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
         stream = s;
         audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
@@ -434,6 +441,11 @@
         recordBtn.textContent = 'Stop Recording';
         recordBtn.classList.add('recording');
         console.log('Audio recording started');
+      }).catch(err => {
+        alert('Microphone access denied or unavailable. Please check your browser settings and permissions.');
+        recordBtn.textContent = 'Start Recording';
+        recordBtn.classList.remove('recording');
+        console.error('getUserMedia error:', err);
       });
     }
     function stopAudio() {
