@@ -43,6 +43,8 @@
       box-shadow: -2px 0 24px #0002;
       align-items: flex-start;
       padding: 1.5rem 0.7rem 1rem 0.7rem;
+      overflow-y: auto;
+      max-height: 100vh;
     }
     .sidebar .logo, .api-sidebar .logo {
       font-size: 1.3rem;
@@ -291,10 +293,54 @@
         <button type="button" id="resetKeysBtn">Clear</button>
         <span id="apiKeyStatus"></span>
       </form>
+      <div class="logo" style="margin-top:2rem;">Smart Devices</div>
+      <form id="deviceForm" style="display:flex;flex-direction:column;gap:0.5rem;width:100%;">
+        <input id="deviceName" type="text" placeholder="Device Name" required style="width:100%;">
+        <input id="deviceType" type="text" placeholder="Device Type (e.g. ESP32)" required style="width:100%;">
+        <input id="deviceIP" type="text" placeholder="Device IP (e.g. 192.168.1.100)" required style="width:100%;">
+        <button type="submit" style="background:#4facfe;color:#fff;border:none;border-radius:6px;padding:0.3rem 0.7rem;">Add Device</button>
+      </form>
+      <div id="deviceList" style="margin-top:1rem;width:100%;"></div>
     </div>
   </div>
   <script>
-    // --- Chat UI logic ---
+    // --- Smart Devices logic ---
+    function getDevices() {
+      return JSON.parse(localStorage.getItem('smartDevices') || '[]');
+    }
+    function saveDevices(devices) {
+      localStorage.setItem('smartDevices', JSON.stringify(devices));
+    }
+    function renderDeviceList() {
+      const listDiv = document.getElementById('deviceList');
+      const devices = getDevices();
+      if (!devices.length) {
+        listDiv.innerHTML = '<i>No devices added.</i>';
+        return;
+      }
+      listDiv.innerHTML = '<b>My Devices</b><ul style="margin:0.5rem 0 0 0.5rem;padding:0;">' +
+        devices.map((d,i) => `<li><b>${d.name}</b> (${d.type}) - ${d.ip} <button onclick="removeDevice(${i})" style="margin-left:0.5rem;background:#ff6a88;color:#fff;border:none;border-radius:6px;padding:0.1rem 0.5rem;">Remove</button></li>`).join('') + '</ul>';
+    }
+    function removeDevice(idx) {
+      let devices = getDevices();
+      devices.splice(idx, 1);
+      saveDevices(devices);
+      renderDeviceList();
+    }
+    document.getElementById('deviceForm').onsubmit = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('deviceName').value.trim();
+      const type = document.getElementById('deviceType').value.trim();
+      const ip = document.getElementById('deviceIP').value.trim();
+      if (!name || !type || !ip) return;
+      let devices = getDevices();
+      devices.push({ name, type, ip });
+      saveDevices(devices);
+      renderDeviceList();
+      document.getElementById('deviceForm').reset();
+    };
+    window.addEventListener('DOMContentLoaded', renderDeviceList);
+  // --- Chat UI logic ---
     let chatHistory = [];
     const chatContainer = document.getElementById('chatContainer');
     function renderChat() {
