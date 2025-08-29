@@ -1,6 +1,3 @@
-import os
-import requests
-    if not MURF_API_KEY:
 
 import requests
 import logging
@@ -36,17 +33,6 @@ def murf_tts_chunked(text: str, murf_api_key: str):
     Fetch the Murf audio URL, download the full audio, and yield base64-encoded file as a single chunk.
     """
     audio_url = murf_tts(text, murf_api_key)
-    if not audio_url:
-        return
-    try:
-        r = requests.get(audio_url)
-        r.raise_for_status()
-        b64_full = base64.b64encode(r.content).decode('utf-8')
-        yield b64_full
-    except Exception as e:
-        logger.error(f"Murf TTS chunked fetch error: {e}")
-    """
-    audio_url = murf_tts(text)
     if not audio_url:
         return
     try:
