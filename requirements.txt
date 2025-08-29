@@ -23,7 +23,7 @@ uvicorn==0.35.0
 pydantic==2.11.7
 
 flask-socketio
-
+flask-sock
 
 Flask-SocketIO==5.3.6
 websockets>=13.0.0,<15.1.0
