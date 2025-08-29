@@ -25,8 +25,8 @@ def transcribe_ws(ws):
         api_keys["murf"] = keys.get("murfKey")
         api_keys["openai"] = keys.get("openaiKey")
     except Exception:
-        api_keys = {"assembly": "66aeaaddcf57412eaf1a70e362b9ec60", "gemini": None, "murf": None, "openai": None}
-    client = StreamingClient(StreamingClientOptions(api_key=api_keys["assembly"] or "66aeaaddcf57412eaf1a70e362b9ec60", api_host="streaming.assemblyai.com"))
+        api_keys = {"assembly": "none", "gemini": "none", "murf": "none", "openai": "none"}
+    client = StreamingClient(StreamingClientOptions(api_key=api_keys["assembly"] or "none", api_host="streaming.assemblyai.com"))
     from services.llm_service import query_llm, maybe_open_in_chrome, search_web_and_enhance_answer
     from services.tts_service import murf_tts
     persona = {
@@ -101,7 +101,7 @@ def transcribe_ws(ws):
                 ]
                 if any(kw in user_prompt.lower() for kw in identity_keywords):
                     logger.info("Identity question detected, using persona LLM only.")
-                    llm_response = query_llm(chat_history)
+                    llm_response = query_llm(chat_history, api_keys["gemini"])
                     logger.info(f"[LLM persona response]: {llm_response}")
                     chat_history.append({"role": "assistant", "content": llm_response})
                     try:
@@ -115,7 +115,7 @@ def transcribe_ws(ws):
                     tts_text = llm_response
                 elif is_question:
                     logger.info("Getting enhanced answer with web search...")
-                    enhanced_answer = search_web_and_enhance_answer(user_prompt)
+                    enhanced_answer = search_web_and_enhance_answer(user_prompt, api_keys["gemini"])
                     logger.info(f"[Web-enhanced answer]: {enhanced_answer}")
                     chat_history.append({"role": "assistant", "content": enhanced_answer})
                     try:
@@ -129,7 +129,7 @@ def transcribe_ws(ws):
                     tts_text = enhanced_answer
                 else:
                     logger.info("Getting full Gemini response...")
-                    llm_response = query_llm(chat_history)
+                    llm_response = query_llm(chat_history, api_keys["gemini"])
                     logger.info(f"[LLM full response]: {llm_response}")
                     chat_history.append({"role": "assistant", "content": llm_response})
                     try:
@@ -143,7 +143,7 @@ def transcribe_ws(ws):
                     tts_text = llm_response
             # Call TTS only if tts_text is set
             if tts_text:
-                audio_b64 = murf_tts(tts_text)
+                audio_b64 = murf_tts(tts_text, api_keys["murf"])
                 logger.info(f"[Murf audio]: {str(audio_b64)[:30]} ...")
                 try:
                     ws.send(json.dumps({

@@ -1,5 +1,6 @@
 # transcriber.py
-import os
+aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
+
 import assemblyai as aai
 from assemblyai.streaming.v3 import (
     StreamingClient, StreamingClientOptions,
@@ -7,11 +8,6 @@ from assemblyai.streaming.v3 import (
     StreamingEvents, BeginEvent, TurnEvent,
     TerminationEvent, StreamingError
 )
-import dotenv
-
-dotenv.load_dotenv()
-
-aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
 
 
 def on_begin(self, event: BeginEvent):
@@ -34,16 +30,15 @@ def on_error(self, error: StreamingError):
 
 
 class AssemblyAIStreamingTranscriber:
-    def __init__(self, sample_rate=16000):
+    def __init__(self, assembly_api_key, sample_rate=16000):
         self.client = StreamingClient(
             StreamingClientOptions(
-                api_key=aai.settings.api_key, api_host="streaming.assemblyai.com")
+                api_key=assembly_api_key, api_host="streaming.assemblyai.com")
         )
         self.client.on(StreamingEvents.Begin, on_begin)
         self.client.on(StreamingEvents.Turn, on_turn)
         self.client.on(StreamingEvents.Termination, on_termination)
         self.client.on(StreamingEvents.Error, on_error)
-
         self.client.connect(StreamingParameters(
             sample_rate=sample_rate, format_turns=False))
 

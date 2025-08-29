@@ -82,11 +82,7 @@ def maybe_control_esp32_led(user_prompt: str) -> str | None:
     return None
 import webbrowser
 import re
-import dotenv
 
-from dotenv import load_dotenv
-           
-load_dotenv()
 
 def maybe_open_in_chrome(user_prompt: str) -> bool:
     """
@@ -163,17 +159,17 @@ def maybe_open_in_chrome(user_prompt: str) -> bool:
     return False
 import openai
 
-def generate_dalle_image(prompt: str) -> str | None:
+def generate_dalle_image(prompt: str, openai_api_key: str) -> str | None:
     """
     Generate an image using OpenAI DALL·E API. Returns the image URL.
     """
     try:
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = openai_api_key
         response = openai.Image.create(
             prompt=prompt,
             n=1,
             size="512x512",
-             model="dall-e-3"
+            model="dall-e-3"
         )
         if response and 'data' in response and len(response['data']) > 0:
             return response['data'][0]['url']
@@ -198,22 +194,22 @@ def stream_llm_response_chunks(text: str, chunk_size: int = 20):
     for i in range(0, len(words), chunk_size):
         yield ' '.join(words[i:i+chunk_size])
 
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from google import genai
 import logging
-
-gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 logger = logging.getLogger(__name__)
 
-def query_llm(text: str) -> str | None:
+from google import genai
+def query_llm(text: str, gemini_api_key: str) -> str | None:
     try:
         # If text is a list (chat history), concatenate all messages
         if isinstance(text, list):
             prompt = '\n'.join([msg['content'] for msg in text if 'content' in msg])
         else:
             prompt = str(text)
+        gemini_client = genai.Client(api_key=gemini_api_key)
         response = gemini_client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt

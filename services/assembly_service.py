@@ -1,10 +1,5 @@
 from fastapi import UploadFile
 import assemblyai as aai
-from dotenv import load_dotenv
-import os
-import asyncio
-import logging
-from typing import Type
 from assemblyai.streaming.v3 import (
     BeginEvent,
     StreamingClient,
@@ -17,8 +12,7 @@ from assemblyai.streaming.v3 import (
     TurnEvent,
 )
 
-load_dotenv()
-aai.settings.api_key =  os.getenv('ASSEMBLYAI_API_KEY')
+
 
 def on_begin(self, event: BeginEvent):
     print(f"Session started: {event.id}")
@@ -37,19 +31,17 @@ def on_error(self, error: StreamingError):
     
     
 class AssemblyAIStreamingClient:
-    def __init__(self, sample_rate=16000):
+    def __init__(self, assembly_api_key, sample_rate=16000):
         self.client = StreamingClient(
             StreamingClientOptions(
-                api_key= aai.settings.api_key,
-                api_host= "streaming.assemblyai.com"
-                
+                api_key=assembly_api_key,
+                api_host="streaming.assemblyai.com"
             )
         )
         self.client.on(StreamingEvents.Begin, on_begin)
         self.client.on(StreamingEvents.Turn, on_turn)
         self.client.on(StreamingEvents.Termination, on_terminated)
         self.client.on(StreamingEvents.Error, on_error)
-        
         self.client.connect(StreamingParameters(
             sample_rate=sample_rate, format_turns=False
         ))

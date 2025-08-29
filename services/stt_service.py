@@ -1,15 +1,13 @@
-import os
+aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
+
 import assemblyai as aai
 import logging
 import io
-from dotenv import load_dotenv
-load_dotenv()
-
-aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
 logger = logging.getLogger(__name__)
 
-def transcribe_audio(audio_bytes: io.BytesIO) -> str | None:
+def transcribe_audio(audio_bytes: io.BytesIO, assembly_api_key: str) -> str | None:
     try:
+        aai.settings.api_key = assembly_api_key
         transcriber = aai.Transcriber()
         transcript = transcriber.transcribe(audio_bytes)
         if transcript.error:
