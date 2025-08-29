@@ -36,3 +36,4 @@ eventlet==0.33.3
 
 # Other dependencies
 typing-extensions
+paho-mqtt

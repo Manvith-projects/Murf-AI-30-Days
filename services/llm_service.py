@@ -1,3 +1,20 @@
+import paho.mqtt.publish as publish
+# MQTT settings (set these to your broker info or pass as args)
+MQTT_BROKER = "broker.hivemq.com"  # Or your cloud broker
+MQTT_PORT = 1883
+MQTT_TOPIC = "myhome/esp32/led"  # Use a unique topic per device
+MQTT_USER = None  # Set if needed
+MQTT_PASS = None  # Set if needed
+
+def send_mqtt_command(command: str, topic: str = MQTT_TOPIC, broker: str = MQTT_BROKER, port: int = MQTT_PORT, user: str = MQTT_USER, password: str = MQTT_PASS) -> bool:
+    try:
+        auth = {'username': user, 'password': password} if user and password else None
+        publish.single(topic, command, hostname=broker, port=port, auth=auth)
+        print(f"[send_mqtt_command] Published '{command}' to {topic} at {broker}:{port}")
+        return True
+    except Exception as e:
+        print(f"[send_mqtt_command] MQTT publish failed: {e}")
+        return False
 from bs4 import BeautifulSoup
 
 def search_web_and_enhance_answer(query: str) -> str:
@@ -47,37 +64,19 @@ def maybe_control_esp32_led(user_prompt: str) -> str | None:
         r"(off) (led|light)"
     ]
     if any(re.search(p, prompt) for p in on_patterns):
-        print("[maybe_control_esp32_led] Detected ON command, sending request...")
-        try:
-            url = f"http://{ESP32_IP}/led/on"
-            print(f"[maybe_control_esp32_led] Requesting: {url}")
-            r = requests.get(url, timeout=2)
-            print(f"[maybe_control_esp32_led] Response status: {r.status_code}")
-            if r.status_code == 200:
-                print("[maybe_control_esp32_led] LED turned on!")
-                return "LED turned on!"
-            else:
-                print("[maybe_control_esp32_led] ESP32 error on ON")
-                return "Failed to turn on LED (ESP32 error)"
-        except Exception as e:
-            print(f"[maybe_control_esp32_led] Exception: {e}")
-            return f"Failed to turn on LED: {e}"
+        print("[maybe_control_esp32_led] Detected ON command, sending MQTT...")
+        ok = send_mqtt_command("on")
+        if ok:
+            return "LED turned on! (via MQTT)"
+        else:
+            return "Failed to turn on LED (MQTT error)"
     if any(re.search(p, prompt) for p in off_patterns):
-        print("[maybe_control_esp32_led] Detected OFF command, sending request...")
-        try:
-            url = f"http://{ESP32_IP}/led/off"
-            print(f"[maybe_control_esp32_led] Requesting: {url}")
-            r = requests.get(url, timeout=2)
-            print(f"[maybe_control_esp32_led] Response status: {r.status_code}")
-            if r.status_code == 200:
-                print("[maybe_control_esp32_led] LED turned off!")
-                return "LED turned off!"
-            else:
-                print("[maybe_control_esp32_led] ESP32 error on OFF")
-                return "Failed to turn off LED (ESP32 error)"
-        except Exception as e:
-            print(f"[maybe_control_esp32_led] Exception: {e}")
-            return f"Failed to turn off LED"
+        print("[maybe_control_esp32_led] Detected OFF command, sending MQTT...")
+        ok = send_mqtt_command("off")
+        if ok:
+            return "LED turned off! (via MQTT)"
+        else:
+            return "Failed to turn off LED (MQTT error)"
     print("[maybe_control_esp32_led] No LED command detected.")
     return None
 import webbrowser

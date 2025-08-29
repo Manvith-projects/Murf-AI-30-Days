@@ -1,3 +1,25 @@
+<!-- LED Control Panel (MQTT) -->
+<div style="margin: 2em 0; padding: 1em; background: rgba(255,255,255,0.1); border-radius: 1em; max-width: 400px;">
+  <h3>ESP32 LED Control (MQTT)</h3>
+  <button onclick="sendLedCommand('on')">Turn LED On</button>
+  <button onclick="sendLedCommand('off')">Turn LED Off</button>
+</div>
+
+<script>
+function sendLedCommand(command) {
+  fetch('/control-device', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      topic: 'led', // must match your ESP32 topic
+      command: command
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.success ? 'Command sent!' : 'Failed to send command'))
+  .catch(err => alert('Error: ' + err));
+}
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -297,7 +319,11 @@
       <form id="deviceForm" style="display:flex;flex-direction:column;gap:0.5rem;width:100%;">
         <input id="deviceName" type="text" placeholder="Device Name" required style="width:100%;">
         <input id="deviceType" type="text" placeholder="Device Type (e.g. ESP32)" required style="width:100%;">
-        <input id="deviceIP" type="text" placeholder="Device IP (e.g. 192.168.1.100)" required style="width:100%;">
+        <input id="deviceTopic" type="text" placeholder="MQTT Topic (e.g. esp32/led)" required style="width:100%;">
+        <input id="mqttHost" type="text" placeholder="MQTT Broker Host (e.g. broker.hivemq.com)" required style="width:100%;">
+        <input id="mqttPort" type="number" placeholder="MQTT Port (default 1883)" style="width:100%;">
+        <input id="mqttUser" type="text" placeholder="MQTT Username (optional)" style="width:100%;">
+        <input id="mqttPass" type="password" placeholder="MQTT Password (optional)" style="width:100%;">
         <button type="submit" style="background:#4facfe;color:#fff;border:none;border-radius:6px;padding:0.3rem 0.7rem;">Add Device</button>
       </form>
       <div id="deviceList" style="margin-top:1rem;width:100%;"></div>
@@ -319,7 +345,7 @@
         return;
       }
       listDiv.innerHTML = '<b>My Devices</b><ul style="margin:0.5rem 0 0 0.5rem;padding:0;">' +
-        devices.map((d,i) => `<li><b>${d.name}</b> (${d.type}) - ${d.ip} <button onclick="removeDevice(${i})" style="margin-left:0.5rem;background:#ff6a88;color:#fff;border:none;border-radius:6px;padding:0.1rem 0.5rem;">Remove</button></li>`).join('') + '</ul>';
+        devices.map((d,i) => `<li><b>${d.name}</b> (${d.type})<br>Topic: <code>${d.topic||''}</code><br>Broker: <code>${d.mqttHost||''}${d.mqttPort?':'+d.mqttPort:''}</code> <button onclick="removeDevice(${i})" style="margin-left:0.5rem;background:#ff6a88;color:#fff;border:none;border-radius:6px;padding:0.1rem 0.5rem;">Remove</button></li>`).join('') + '</ul>';
     }
     function removeDevice(idx) {
       let devices = getDevices();
@@ -331,10 +357,14 @@
       e.preventDefault();
       const name = document.getElementById('deviceName').value.trim();
       const type = document.getElementById('deviceType').value.trim();
-      const ip = document.getElementById('deviceIP').value.trim();
-      if (!name || !type || !ip) return;
+      const topic = document.getElementById('deviceTopic').value.trim();
+      const mqttHost = document.getElementById('mqttHost').value.trim();
+      const mqttPort = document.getElementById('mqttPort').value.trim();
+      const mqttUser = document.getElementById('mqttUser').value.trim();
+      const mqttPass = document.getElementById('mqttPass').value.trim();
+      if (!name || !type || !topic || !mqttHost) return;
       let devices = getDevices();
-      devices.push({ name, type, ip });
+      devices.push({ name, type, topic, mqttHost, mqttPort, mqttUser, mqttPass });
       saveDevices(devices);
       renderDeviceList();
       document.getElementById('deviceForm').reset();

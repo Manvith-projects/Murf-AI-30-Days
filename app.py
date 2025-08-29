@@ -1,5 +1,32 @@
 import json
 import logging
+from flask import Flask, render_template, request, jsonify
+from flask_sock import Sock
+from services.llm_service import send_mqtt_command
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+sock = Sock(app)
+
+# Device control API (MQTT)
+@app.route('/control-device', methods=['POST'])
+def control_device():
+    data = request.json
+    topic = data.get('topic')
+    command = data.get('command')
+    # Use public Mosquitto broker by default
+    mqtt_host = data.get('mqttHost') or "broker.hivemq.com"
+    mqtt_port = int(data.get('mqttPort') or 1883)
+    mqtt_user = data.get('mqttUser') or None
+    mqtt_pass = data.get('mqttPass') or None
+    if not topic or not command:
+        return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+    ok = send_mqtt_command(command, topic, mqtt_host, mqtt_port, mqtt_user, mqtt_pass)
+    return jsonify({'success': ok})
+import json
+import logging
 from flask import Flask, render_template
 from flask_sock import Sock
 
