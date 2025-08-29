@@ -77,7 +77,7 @@ def maybe_control_esp32_led(user_prompt: str) -> str | None:
                 return "Failed to turn off LED (ESP32 error)"
         except Exception as e:
             print(f"[maybe_control_esp32_led] Exception: {e}")
-            return f"Failed to turn off LED: {e}"
+            return f"Failed to turn off LED"
     print("[maybe_control_esp32_led] No LED command detected.")
     return None
 import webbrowser
