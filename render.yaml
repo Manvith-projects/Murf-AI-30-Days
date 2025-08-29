@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: murf-ai-voice-agent
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000

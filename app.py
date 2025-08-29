@@ -1,273 +1,178 @@
-
-from flask import Flask, request, jsonify, render_template
-from dotenv import load_dotenv
-import os
-import io
+import json
 import logging
-from datetime import datetime
-from schemas import AudioRequest, AudioResponse, LLMQueryRequest, LLMQueryResponse
-from services.tts_service import murf_tts
-from services.stt_service import transcribe_audio
-from services.llm_service import query_llm
-
-from flask_socketio import SocketIO, send
+from flask import Flask, render_template
 from flask_sock import Sock
 
-
-load_dotenv()
-
-
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
-sock = Sock(app)
-# ----------------- WebSocket Echo Endpoint -----------------
-@sock.route('/ws')
-def websocket_echo(ws):
-    while True:
-        data = ws.receive()
-        if data is None:
-            break
-        logger.info(f"[Flask-Sock WS] Received: {data}")
-        ws.send(data)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-# In-memory chat history storage
-chat_sessions = {}
 
-# ----------------- WebSocket Echo Endpoint -----------------
-@socketio.on('message')
-def handle_ws_message(msg):
-    logger.info(f"WebSocket received: {msg}")
-    send(msg)
-
-# In-memory chat history storage
-chat_sessions = {}
+app = Flask(__name__)
+sock = Sock(app)
 
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
 
-@app.route("/api")
-def api():
-    return render_template("api.html")
-
-# -------------- TEXT TO SPEECH (MURF) ----------------
-
-
-@app.route("/generate-audio", methods=["POST"])
-def generate_audio():
+@sock.route('/transcribe-ws')
+def transcribe_ws(ws):
+    from assemblyai.streaming.v3 import StreamingClient, StreamingClientOptions, StreamingParameters, StreamingEvents, TurnEvent
+    api_keys = {"assembly": None, "gemini": None, "murf": None, "openai": None}
+    first_msg = ws.receive()
     try:
-        req_data = request.get_json() if request.is_json else request.form
-        text = req_data.get("text")
-        if not text:
-            return jsonify({"error": "No text provided"}), 400
-        audio_url = murf_tts(text)
-        if not audio_url:
-            return jsonify({"error": "Failed to generate audio. Please try again later."}), 502
-        return jsonify({"audio_url": audio_url})
-    except Exception as e:
-        logger.exception("Error in generate_audio")
-        return jsonify({"error": "Internal server error. Please try again later."}), 500
-
-# -------------- ECHO BOT COMBINED ----------------
-@app.route("/tts/echo", methods=["POST"])
-def echo_bot():
-    try:
-        if "audio" not in request.files:
-            return jsonify({"error": "No audio file"}), 400
-        audio_file = request.files["audio"]
-        audio_bytes = io.BytesIO(audio_file.read())
-        text = transcribe_audio(audio_bytes)
-        if not text:
-            return jsonify({"error": "Transcription failed. Please try again."}), 502
-        audio_url = murf_tts(text)
-        if not audio_url:
-            return jsonify({"error": "Failed to generate AI voice. Please try again later."}), 502
-        return jsonify({"transcription": text, "audio_url": audio_url})
-    except Exception as e:
-        logger.exception("Error in echo_bot")
-        return jsonify({"error": "Internal server error. Please try again later."}), 500
-
-#-----------------------------Gemini API--------------------------
-
-
-
-@app.route("/llm/query", methods=["POST"])
-def llm_query():
-    try:
-        if "audio" in request.files:
-            audio_file = request.files["audio"]
-            if not audio_file:
-                return jsonify({"error": "No audio file provided"}), 400
-            audio_bytes = io.BytesIO(audio_file.read())
-            text = transcribe_audio(audio_bytes)
-            if not text:
-                return jsonify({"error": "Failed to transcribe audio. Please try again."}), 502
-        else:
-            payload = request.get_json(force=True)
-            text = payload.get("text")
-            if not text:
-                return jsonify({"error": "No text or audio provided"}), 400
-        llm_response = query_llm(text)
-        if not llm_response:
-            return jsonify({"error": "Empty response from LLM. Please try again later."}), 502
-        audio_url = murf_tts(llm_response)
-        if not audio_url:
-            return jsonify({"error": "Failed to generate audio response. Please try again later."}), 502
-        return jsonify({
-            "transcription": text if "audio" in request.files else None,
-            "llm_response": llm_response,
-            "audio_url": audio_url
-        }), 200
-    except Exception as e:
-        logger.exception("Error in llm_query")
-        return jsonify({"error": "Internal server error. Please try again later."}), 500
-
-# -------------- CHAT SESSION WITH HISTORY ----------------
-def get_or_create_session(session_id):
-    """Get existing session or create new one"""
-    if session_id not in chat_sessions:
-        chat_sessions[session_id] = {
-            "messages": [],
-            "created_at": datetime.now(),
-            "last_activity": datetime.now()
-        }
-    else:
-        chat_sessions[session_id]["last_activity"] = datetime.now()
-    return chat_sessions[session_id]
-
-def add_message_to_session(session_id, role, content):
-    """Add a message to the session history"""
-    session = get_or_create_session(session_id)
-    message = {
-        "role": role,  # "user" or "assistant"
-        "content": content,
-        "timestamp": datetime.now()
+        keys = json.loads(first_msg)
+        api_keys["assembly"] = keys.get("assemblyKey")
+        api_keys["gemini"] = keys.get("geminiKey")
+        api_keys["murf"] = keys.get("murfKey")
+        api_keys["openai"] = keys.get("openaiKey")
+    except Exception:
+        api_keys = {"assembly": "66aeaaddcf57412eaf1a70e362b9ec60", "gemini": None, "murf": None, "openai": None}
+    client = StreamingClient(StreamingClientOptions(api_key=api_keys["assembly"] or "66aeaaddcf57412eaf1a70e362b9ec60", api_host="streaming.assemblyai.com"))
+    from services.llm_service import query_llm, maybe_open_in_chrome, search_web_and_enhance_answer
+    from services.tts_service import murf_tts
+    persona = {
+        "role": "system",
+        "content": (
+            "You are Buzz Lightyear. If asked your name or who you are, always reply 'I am Buzz Lightyear.' "
+            "Keep your responses short, direct, and helpful, like a personal assistant. Avoid long role-played speeches."
+        )
     }
-    session["messages"].append(message)
-    return session
+    chat_history = [persona]
+    import re
+    transcript_accumulator = {'text': ''}
+    streaming_started = {'done': False}
+    def is_image_request(text):
+        keywords = [r"draw (me|an|a|the)?", r"show (me|an|a|the)?", r"generate (an|a|the)? image", r"create (an|a|the)? image", r"picture of", r"image of", r"visualize", r"illustrate"]
+        text = text.lower()
+        return any(re.search(kw, text) for kw in keywords)
+    def on_turn(self, event: TurnEvent):
+        logger.info(f"[WS] {event.transcript} (end_of_turn={event.end_of_turn})")
+        # Always send partial transcript for live update
+        try:
+            ws.send(json.dumps({
+                "type": "partial",
+                "transcript": event.transcript
+            }))
+        except Exception as e:
+            logger.warning(f"WebSocket send (partial) failed: {e}")
+        # Accumulate transcript until end_of_turn
+        transcript_accumulator['text'] = event.transcript
+        # If end_of_turn, process only the first one per session
+        if event.end_of_turn and not streaming_started['done']:
+            streaming_started['done'] = True
+            try:
+                ws.send(json.dumps({
+                    "type": "end_of_turn",
+                    "transcript": event.transcript
+                }))
+            except Exception as e:
+                logger.warning(f"WebSocket send (end_of_turn) failed: {e}")
+            # Save user message to chat history
+            chat_history.append({"role": "user", "content": transcript_accumulator['text']})
+            user_prompt = transcript_accumulator['text']
+            from services.llm_service import maybe_control_esp32_led
+            led_feedback = maybe_control_esp32_led(user_prompt)
+            tts_text = None
+            if led_feedback:
+                try:
+                    ws.send(json.dumps({
+                        "type": "assistant_chunk",
+                        "text": led_feedback
+                    }))
+                    logger.info("Sent LED feedback to client.")
+                except Exception as e:
+                    logger.warning(f"WebSocket send (LED feedback) failed: {e}")
+                tts_text = led_feedback
+            elif maybe_open_in_chrome(user_prompt):
+                try:
+                    ws.send(json.dumps({
+                        "type": "web_search_opened"
+                    }))
+                    logger.info("Sent web_search_opened to client.")
+                except Exception as e:
+                    logger.warning(f"WebSocket send (web_search_opened) failed: {e}")
+                tts_text = "Opened web search in your browser."
+            else:
+                # If the prompt looks like a question, use web search to enhance answer
+                question_words = ("who", "what", "when", "where", "why", "how")
+                is_question = user_prompt.strip().endswith("?") or user_prompt.lower().startswith(question_words)
+                
+                identity_keywords = [
+                    "your name", "who are you", "what are you", "identify yourself", "are you buzz", "are you buzz lightyear"
+                ]
+                if any(kw in user_prompt.lower() for kw in identity_keywords):
+                    logger.info("Identity question detected, using persona LLM only.")
+                    llm_response = query_llm(chat_history)
+                    logger.info(f"[LLM persona response]: {llm_response}")
+                    chat_history.append({"role": "assistant", "content": llm_response})
+                    try:
+                        ws.send(json.dumps({
+                            "type": "assistant_chunk",
+                            "text": llm_response
+                        }))
+                        logger.info("Sent assistant_chunk to client.")
+                    except Exception as e:
+                        logger.warning(f"WebSocket send (assistant_chunk) failed: {e}")
+                    tts_text = llm_response
+                elif is_question:
+                    logger.info("Getting enhanced answer with web search...")
+                    enhanced_answer = search_web_and_enhance_answer(user_prompt)
+                    logger.info(f"[Web-enhanced answer]: {enhanced_answer}")
+                    chat_history.append({"role": "assistant", "content": enhanced_answer})
+                    try:
+                        ws.send(json.dumps({
+                            "type": "assistant_chunk",
+                            "text": enhanced_answer
+                        }))
+                        logger.info("Sent assistant_chunk to client.")
+                    except Exception as e:
+                        logger.warning(f"WebSocket send (assistant_chunk) failed: {e}")
+                    tts_text = enhanced_answer
+                else:
+                    logger.info("Getting full Gemini response...")
+                    llm_response = query_llm(chat_history)
+                    logger.info(f"[LLM full response]: {llm_response}")
+                    chat_history.append({"role": "assistant", "content": llm_response})
+                    try:
+                        ws.send(json.dumps({
+                            "type": "assistant_chunk",
+                            "text": llm_response
+                        }))
+                        logger.info("Sent assistant_chunk to client.")
+                    except Exception as e:
+                        logger.warning(f"WebSocket send (assistant_chunk) failed: {e}")
+                    tts_text = llm_response
+            # Call TTS only if tts_text is set
+            if tts_text:
+                audio_b64 = murf_tts(tts_text)
+                logger.info(f"[Murf audio]: {str(audio_b64)[:30]} ...")
+                try:
+                    ws.send(json.dumps({
+                        "type": "audio_chunk",
+                        "audio_b64": audio_b64,
+                        "audio_mime": "audio/mpeg"
+                    }))
+                    logger.info(f"Audio chunk sent to client. Length: {len(audio_b64) if audio_b64 else 0}")
+                except Exception as e:
+                    logger.warning(f"WebSocket send (audio_chunk) failed: {e}")
+                try:
+                    ws.send(json.dumps({"type": "audio_done"}))
+                    logger.info("Sent audio_done to client.")
+                except Exception as e:
+                    logger.warning(f"WebSocket send (audio_done) failed: {e}")
+                logger.info("Finished streaming all chunks.")
 
-def build_conversation_context(session_id, new_user_message):
-    """Build conversation context for LLM including chat history"""
-    session = get_or_create_session(session_id)
-    
-    # Build conversation string
-    conversation = []
-    
-    # Add previous messages
-    for msg in session["messages"]:
-        if msg["role"] == "user":
-            conversation.append(f"User: {msg['content']}")
-        else:
-            conversation.append(f"Assistant: {msg['content']}")
-    
-    # Add new user message
-    conversation.append(f"User: {new_user_message}")
-    
-    # Join with newlines and add context
-    context = "You are a helpful AI assistant. Here is our conversation:\n\n" + "\n".join(conversation)
-    
-    return context
-
-@app.route("/agent/chat/<session_id>", methods=["POST"])
-def agent_chat(session_id):
-    """Chat endpoint with session-based history"""
+    client.on(StreamingEvents.Turn, on_turn)
+    client.connect(StreamingParameters(sample_rate=16000, format_turns=True))
     try:
-        # Validate session_id
-        if not session_id or len(session_id) < 1:
-            return jsonify({"error": "Invalid session ID"}), 400
-        # Check if audio file is provided
-        if "audio" not in request.files:
-            return jsonify({"error": "No audio file provided"}), 400
-        audio_file = request.files["audio"]
-        if not audio_file:
-            return jsonify({"error": "Empty audio file"}), 400
-        audio_bytes = io.BytesIO(audio_file.read())
-        # Step 1: Transcribe audio
-        user_message = transcribe_audio(audio_bytes)
-        if not user_message:
-            return jsonify({"error": "Failed to transcribe audio. Please try again."}), 502
-        # Step 2: Add user message to chat history and build context
-        try:
-            conversation_context = build_conversation_context(session_id, user_message)
-            add_message_to_session(session_id, "user", user_message)
-        except Exception as e:
-            logger.exception("Chat history error")
-            return jsonify({"error": f"Chat history error: {str(e)}"}), 500
-        # Step 3: Send conversation context to Gemini LLM
-        logger.info(f"[agent_chat] Sending context to LLM: {conversation_context}")
-        llm_response = query_llm(conversation_context)
-        logger.info(f"[agent_chat] LLM response: {llm_response}")
-        if not llm_response:
-            logger.error("[agent_chat] Empty response from LLM.")
-            return jsonify({"error": "Empty response from LLM. Please try again later."}), 502
-        # Step 4: Add LLM response to chat history
-        try:
-            add_message_to_session(session_id, "assistant", llm_response)
-        except Exception as e:
-            logger.exception("Failed to save LLM response")
-            return jsonify({"error": f"Failed to save LLM response: {str(e)}"}), 500
-        # Step 5: Generate audio from LLM response using Murf
-        try:
-            audio_url = murf_tts(llm_response)
-            if not audio_url:
-                return jsonify({"error": "Failed to generate audio response. Please try again later."}), 502
-        except Exception as e:
-            logger.exception("Audio generation failed")
-            return jsonify({"error": f"Audio generation failed: {str(e)}"}), 500
-        # Step 6: Return response with session info
-        session_info = chat_sessions[session_id]
-        return jsonify({
-            "session_id": session_id,
-            "transcription": user_message,
-            "llm_response": llm_response,
-            "audio_url": audio_url,
-            "message_count": len(session_info["messages"]),
-            "last_activity": session_info["last_activity"].isoformat()
-        })
-    except Exception as e:
-        logger.exception("Error in agent_chat")
-        return jsonify({"error": "Internal server error. Please try again later."}), 500
-
-@app.route("/agent/session/<session_id>/history", methods=["GET"])
-def get_session_history(session_id):
-    """Get chat history for a specific session"""
-    if session_id not in chat_sessions:
-        return jsonify({"error": "Session not found"}), 404
-    
-    session = chat_sessions[session_id]
-    return jsonify({
-        "session_id": session_id,
-        "messages": [
-            {
-                "role": msg["role"],
-                "content": msg["content"],
-                "timestamp": msg["timestamp"].isoformat()
-            }
-            for msg in session["messages"]
-        ],
-        "created_at": session["created_at"].isoformat(),
-        "last_activity": session["last_activity"].isoformat()
-    })
-
-@app.route("/agent/session/<session_id>", methods=["DELETE"])
-def clear_session(session_id):
-    """Clear/delete a chat session"""
-    if session_id in chat_sessions:
-        del chat_sessions[session_id]
-        return jsonify({"message": f"Session {session_id} cleared"})
-    else:
-        return jsonify({"error": "Session not found"}), 404
-
-
-
-socketio = SocketIO(app, cors_allowed_origins="*")
-
-@socketio.on('message', namespace='/ws')
-def handle_ws_message(msg):
-    print(f"Received via websocket: {msg}")
-    send(msg, namespace='/ws')  # Echo back
-
+        while True:
+            data = ws.receive()
+            if data is None:
+                break
+            client.stream(data)
+    finally:
+        client.disconnect(terminate=True)
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)

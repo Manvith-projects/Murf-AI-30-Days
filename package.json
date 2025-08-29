@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "http-proxy": "^1.18.1",
+    "ws": "^8.18.3"
+  }
+}
