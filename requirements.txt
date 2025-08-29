@@ -35,15 +35,4 @@ python-socketio==5.8.0
 eventlet==0.33.3
 
 # Other dependencies
-uuid
 typing-extensions
-io
-base64
-logging
-re
-os
-time
-functools
-datetime
-webbrowser
-asyncio
