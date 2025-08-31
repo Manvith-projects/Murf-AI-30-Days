@@ -1,3 +1,4 @@
+  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -351,6 +352,35 @@
       document.getElementById('deviceForm').reset();
     };
     window.addEventListener('DOMContentLoaded', renderDeviceList);
+    // --- Open website logic ---
+  function tryOpenWebsiteFromAssistant(text) {
+    // Simple keyword-based detection
+    const siteMap = {
+      'youtube': 'https://www.youtube.com',
+      'github': 'https://www.github.com',
+      'wikipedia': 'https://www.wikipedia.org',
+      'gmail': 'https://mail.google.com',
+      'google drive': 'https://drive.google.com',
+      'reddit': 'https://www.reddit.com',
+      'twitter': 'https://twitter.com',
+      'facebook': 'https://facebook.com',
+      'instagram': 'https://instagram.com'
+    };
+    const lower = text.toLowerCase();
+    for (const key in siteMap) {
+      if (lower.includes('open ' + key)) {
+        window.open(siteMap[key], '_blank');
+        return true;
+      }
+    }
+    // Fallback: open any URL in the text
+    const urlMatch = text.match(/https?:\/\/[\w\.-]+(\.[\w\.-]+)+(\/[\w\-\._~:\/?#\[\]@!$&'()*+,;=]*)?/i);
+    if (urlMatch) {
+      window.open(urlMatch[0], '_blank');
+      return true;
+    }
+    return false;
+  }
   // --- Chat UI logic ---
     let chatHistory = [];
     const chatContainer = document.getElementById('chatContainer');
@@ -546,7 +576,9 @@
       } else {
         assistantStreamingMsg.content += text;
       }
-      renderChat();
+  renderChat();
+  // Try to open website if the assistant suggests it
+  tryOpenWebsiteFromAssistant(text);
     }
     // Restore API keys from localStorage on page load
     window.addEventListener('DOMContentLoaded', () => {
