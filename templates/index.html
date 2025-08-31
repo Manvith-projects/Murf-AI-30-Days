@@ -354,6 +354,16 @@
     window.addEventListener('DOMContentLoaded', renderDeviceList);
     // --- Open website logic ---
   function tryOpenWebsiteFromAssistant(text) {
+    // Custom command mapping
+    const lower = text.toLowerCase();
+    if (lower.includes('play songs in spotify') || lower.includes('open spotify')) {
+      window.open('https://open.spotify.com/', '_blank');
+      return true;
+    }
+    if (lower.includes('play python classes in youtube') || lower.includes('search python classes in youtube')) {
+      window.open('https://www.youtube.com/results?search_query=python+classes', '_blank');
+      return true;
+    }
     // Simple keyword-based detection
     const siteMap = {
       'youtube': 'https://www.youtube.com',
@@ -366,7 +376,6 @@
       'facebook': 'https://facebook.com',
       'instagram': 'https://instagram.com'
     };
-    const lower = text.toLowerCase();
     for (const key in siteMap) {
       if (lower.includes('open ' + key)) {
         window.open(siteMap[key], '_blank');
@@ -378,6 +387,12 @@
     if (urlMatch) {
       window.open(urlMatch[0], '_blank');
       return true;
+    }
+    // Fallback: ask LLM for help (show a message or trigger a new chat turn)
+    // You can customize this to send a new prompt to the backend if needed
+    // For now, show a notification
+    if (lower.includes('open') || lower.includes('play')) {
+      alert('This command is not recognized. The agent will try to help you if possible.');
     }
     return false;
   }
