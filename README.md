@@ -1,3 +1,20 @@
+## 🚀 New Features (2025)
+
+### 🌐 Global Smart Device Control (MQTT)
+- **Control ESP32 and other IoT devices from anywhere using MQTT.**
+- **Public broker support:** Out-of-the-box integration with broker.hivemq.com (no account required for testing).
+- **Frontend Smart Devices Panel:** Modern UI panel to add, configure, and control devices (LED on/off, more coming soon).
+- **Backend MQTT API:** `/control-device` endpoint lets you send commands to any device/topic via MQTT.
+- **ESP32 Sample Code:** Provided for instant device integration—just flash and go!
+- **Cloud-to-Home Ready:** Works even when backend is deployed (no need for port forwarding or local IPs).
+- **Robust error handling and debug output** for device and network troubleshooting.
+
+### 🛠️ Recent Improvements
+- **Unique MQTT client IDs** for all ESP32 connections (prevents disconnect loops).
+- **Automatic topic and broker sync** between backend, frontend, and device code.
+- **Frontend LED control buttons** for instant device testing.
+- **Step-by-step troubleshooting and diagnostics** included in code and docs.
+
 # 🎤 Voice AI Agent - Murf AI Challenge
 
 <div align="center">
@@ -58,6 +75,12 @@ A **modern, intelligent voice-powered conversational AI agent** that enables nat
 ---
 
 ## 🚀 Features
+### 🏠 **Smart Devices & IoT**
+- **Add, configure, and control smart devices (e.g., ESP32) from the web UI**
+- **Global device control via MQTT** (no local network required)
+- **Works with public brokers and cloud deployments**
+- **Sample ESP32 code included** for instant setup
+
 
 ### 🎙️ **Voice Interaction**
 - **One-Touch Recording**: Single button for start/stop with visual feedback
