@@ -353,15 +353,32 @@
     };
     window.addEventListener('DOMContentLoaded', renderDeviceList);
     // --- Open website logic ---
+  function openInNewTab(url) {
+    // Try to open in a new tab, fallback to showing a clickable link if blocked
+    const win = window.open(url, '_blank');
+    if (!win) {
+      // Popup blocked, show a clickable link in the chat
+      const chat = document.getElementById('chat-history');
+      if (chat) {
+        const msg = document.createElement('div');
+        msg.className = 'chat-message assistant';
+        msg.innerHTML = `Popup blocked. <a href="${url}" target="_blank" rel="noopener">Click here to open: ${url}</a>`;
+        chat.appendChild(msg);
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
+  }
+
   function tryOpenWebsiteFromAssistant(text) {
     // Custom command mapping
     const lower = text.toLowerCase();
-    if (lower.includes('play songs in spotify') || lower.includes('open spotify')) {
-      window.open('https://open.spotify.com/', '_blank');
+    // Flexible Spotify/music matching
+    if (lower.includes('spotify') || lower.includes('play music') || lower.includes('play some music')) {
+      openInNewTab('https://open.spotify.com/');
       return true;
     }
     if (lower.includes('play python classes in youtube') || lower.includes('search python classes in youtube')) {
-      window.open('https://www.youtube.com/results?search_query=python+classes', '_blank');
+      openInNewTab('https://www.youtube.com/results?search_query=python+classes');
       return true;
     }
     // Simple keyword-based detection
@@ -378,22 +395,17 @@
     };
     for (const key in siteMap) {
       if (lower.includes('open ' + key)) {
-        window.open(siteMap[key], '_blank');
+        openInNewTab(siteMap[key]);
         return true;
       }
     }
     // Fallback: open any URL in the text
     const urlMatch = text.match(/https?:\/\/[\w\.-]+(\.[\w\.-]+)+(\/[\w\-\._~:\/?#\[\]@!$&'()*+,;=]*)?/i);
     if (urlMatch) {
-      window.open(urlMatch[0], '_blank');
+      openInNewTab(urlMatch[0]);
       return true;
     }
-    // Fallback: ask LLM for help (show a message or trigger a new chat turn)
-    // You can customize this to send a new prompt to the backend if needed
-    // For now, show a notification
-    if (lower.includes('open') || lower.includes('play')) {
-      alert('This command is not recognized. The agent will try to help you if possible.');
-    }
+    // No popup for unknown commands
     return false;
   }
   // --- Chat UI logic ---
